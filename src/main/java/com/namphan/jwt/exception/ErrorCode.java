@@ -9,6 +9,8 @@ public enum ErrorCode {
     INVALID_KEY(1001, "Invalid key", HttpStatus.BAD_REQUEST),
     USER_EXISTED(1002, "Tài khoản đã tồn tại", HttpStatus.BAD_REQUEST),
     USERNAME_INVALID(1003, "Username must be at least {min} characters", HttpStatus.BAD_REQUEST),
+    INVALID_TOKEN(1004, "Invalid token", HttpStatus.UNAUTHORIZED),
+    ROLE_NOT_FOUND(1005, "Role not found", HttpStatus.NOT_FOUND),
     ;
 
 
