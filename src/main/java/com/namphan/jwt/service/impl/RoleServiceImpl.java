@@ -1,5 +1,7 @@
 package com.namphan.jwt.service.impl;
 
+import com.namphan.jwt.exception.AppException;
+import com.namphan.jwt.exception.ErrorCode;
 import com.namphan.jwt.payload.CreateRoleRequest;
 import com.namphan.jwt.payload.entity.Role;
 import com.namphan.jwt.repository.RoleRepository;
@@ -17,7 +19,9 @@ public class RoleServiceImpl implements RoleService {
     public Role createRole(CreateRoleRequest role) {
         if(roleRepository.existsByRoleName(role.getRoleName()))
         {
-            throw new RuntimeException("Role already exists");
+            // 1. NÉM LỖI: Nếu tên role đã tồn tại, Service sẽ ném AppException.
+            //    Lỗi này mang theo ErrorCode.USER_EXISTED (mặc dù nên là ROLE_EXISTED).
+            throw new AppException(ErrorCode.USER_EXISTED);
         }
         Role roleEntity = Role.builder()
                 .roleName(role.getRoleName()).build();

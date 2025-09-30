@@ -21,12 +21,16 @@ public class RoleController {
     // Tạo mới role
     @PostMapping
     public ResponseEntity<ApiResponse<Role>> createRole(@RequestBody CreateRoleRequest role) {
+        // 2. GỌI SERVICE: Controller chỉ gọi Service và chờ kết quả.
         Role savedRole = roleService.createRole(role);
+
+        // 3. THÀNH CÔNG: Nếu không có lỗi nào được ném, Controller trả về phản hồi thành công (HTTP 201).
         ApiResponse<Role> response = ApiResponse.<Role>builder()
                 .code(HttpStatus.CREATED.value())
                 .message("Role created successfully")
                 .data(savedRole)
                 .build();
+
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
