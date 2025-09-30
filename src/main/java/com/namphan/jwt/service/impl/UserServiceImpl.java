@@ -8,8 +8,10 @@ import com.namphan.jwt.payload.dto.UserDto;
 import com.namphan.jwt.payload.entity.Role;
 import com.namphan.jwt.payload.entity.User;
 import com.namphan.jwt.payload.request.IntrospectRequest;
+import com.namphan.jwt.payload.request.LoginResquest;
 import com.namphan.jwt.payload.request.RegisterUserRequest;
 import com.namphan.jwt.payload.response.IntrospectResponse;
+import com.namphan.jwt.payload.response.LoginResponse;
 import com.namphan.jwt.repository.RoleRepository;
 import com.namphan.jwt.repository.UserRepository;
 import com.namphan.jwt.service.UserService;
@@ -85,5 +87,28 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(userEntity);
         return  userMapper.toUserDto(userEntity);
+    }
+
+    @Override
+    public LoginResponse login(LoginResquest loginRequest) {
+        User user = userRepository.findUserByUsername(loginRequest.getUsername());
+        if(user == null) {
+            throw new AppException(ErrorCode.USER_NOT_FOUND);
+        }
+
+
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+            throw new AppException(ErrorCode.INVALID_PASSWORD);
+        }
+
+
+        Jwt.TokenPair tokenPair = jwt.generateTokens(user);
+
+        return LoginResponse.builder()
+                .accessToken(tokenPair.accessToken().token())
+                .refreshToken(tokenPair.refreshToken().token())
+                .accessTokenExpiry(tokenPair.accessToken().expiryDate().getTime())
+                .refreshTokenExpiry(tokenPair.refreshToken().expiryDate().getTime())
+                .build();
     }
 }

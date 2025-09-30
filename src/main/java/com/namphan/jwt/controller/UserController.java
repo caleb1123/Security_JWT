@@ -2,8 +2,10 @@ package com.namphan.jwt.controller;
 
 import com.namphan.jwt.payload.dto.UserDto;
 import com.namphan.jwt.payload.entity.Role;
+import com.namphan.jwt.payload.request.LoginResquest;
 import com.namphan.jwt.payload.request.RegisterUserRequest;
 import com.namphan.jwt.payload.response.ApiResponse;
+import com.namphan.jwt.payload.response.LoginResponse;
 import com.namphan.jwt.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +32,19 @@ public class UserController {
                 .build();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse<LoginResponse>> login (@RequestBody LoginResquest loginRequest) {
+        LoginResponse loginResponse = userService.login(loginRequest);
+
+        ApiResponse<LoginResponse> response = ApiResponse.<LoginResponse>builder()
+                .code(HttpStatus.OK.value())
+                .message("User login successfully")
+                .data(loginResponse)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 }
